@@ -91,10 +91,14 @@ iris/
 Crie um arquivo `.env` na pasta backend com as seguintes variáveis:
 
 ```env
-PORT=5000
-DATABASE_URL=your_database_url
-JWT_SECRET=your_secret_key
-NODE_ENV=development
+PORT=5000                # Porta em que o servidor Express irá escutar
+MONGO_URI=               # URL de conexão do MongoDB (ex: mongodb://user:pass@host:port/dbname)
+JWT_SECRET=              # Chave secreta usada para assinar tokens JWT
+JWT_EXPIRE=              # Tempo de expiração dos tokens JWT (ex: 1d, 12h)
+
+CLOUDINARY_NAME=         # Nome da conta Cloudinary para upload de imagens
+CLOUDINARY_KEY=          # API Key da conta Cloudinary
+CLOUDINARY_SECRET=       # API Secret da conta Cloudinary
 ```
 
 ## 📝 Licença
