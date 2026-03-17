@@ -1,0 +1,124 @@
+#root {
+  max-width: 1280px;
+  margin: 0;
+  padding: 2rem;
+}
+
+.content-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  color: black;
+  width: 95vw;
+  background-color: rgb(250, 250, 250);
+  
+  box-sizing: border-box; 
+  margin-bottom: 2px;
+  padding: 50px 0; 
+}
+
+.content-box > * {
+    margin: auto;
+    padding: auto 20px;
+    width: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+    .content-box { padding: 36px 0 }
+    .content-box > * { padding-left: 16px; padding-right: 16px; }
+}
+
+@media (max-width: 768px) {
+    .content-box { padding: 24px 0 }
+    .content-box > * { padding-left: 12px; padding-right: 12px; }
+}
+
+.input {
+    width: 90%;
+    max-height: 100%;
+    border-radius: 5px;
+    border: 2px solid lightgray;
+    background: none;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.number {
+  font-size: 18px;
+  width: 100%;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.header-btn:hover {
+    color: #562ace;
+}
+
+.button {
+    width: 100%;
+    background-color: #562ace;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 60px 0px 0px 0px;
+    border: none;
+    border-radius: 8px;
+    max-height: 45px;
+}
+
+.input-button {
+    transition: 0.2s;
+    background-color: #562ace;
+    font-size: large;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 10px;
+}
+
+.file-upload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  color: white;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.file-upload input {
+  display: none;
+}
+
+.input-button:hover {
+    filter: brightness(120%);
+}
+
+.copy {
+  cursor: pointer;
+  color: gray;
+  transition: 0.4s;
+  margin-left: 5px;
+}
+.copy:hover {
+  opacity: 100%;
+  color: #562ace;
+  text-decoration: dotted underline;
+}

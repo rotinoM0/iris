@@ -1,0 +1,40 @@
+.kebab-container {
+  position: relative;
+  display: inline-block; /* Or adjust as needed */
+}
+
+.kebab-icon {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: black;
+}
+
+.kebab-dropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.kebab-dropdown li, span {
+  padding: 8px 16px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: black;
+}
+
+button {
+    background: none;
+}
+
+.kebab-dropdown li:hover {
+  background-color: #f1f1f1;
+}

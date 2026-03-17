@@ -1,0 +1,56 @@
+
+
+.select {
+  width: 100%;
+  height: fit-content;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%234a90e2" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.inv {
+  border: none;
+  text-align: center;
+  font-size: large;
+  max-width: 50%;
+}
+
+.input-edit {
+  background: none;
+  border: none;
+  cursor: pointer;
+  justify-content: end;
+}
+
+.table-btn {
+  padding: 20px;
+}
+
+.inv-btn {
+  opacity: 0;
+}
+.inv-btn:hover {
+  opacity: 100;
+}
+
+option {
+  background-color: aliceblue;
+  color: #333;
+  font-size: 16px;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+}
+
+option:hover {
+  background-color: #e6f0ff;
+}
+
+.number::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+

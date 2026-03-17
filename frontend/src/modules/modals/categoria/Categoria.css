@@ -1,0 +1,35 @@
+form {
+  height: 100%;
+}
+
+.categoria {
+  width: 50%;
+  height: 80%;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  margin-top: 100px;
+}
+
+.cancel {
+  max-width: 100px;
+  background-color: aliceblue;
+  border: 1px solid rgb(12, 12, 12);
+  color: rgb(12, 12, 12);
+}
+
+.cancel:hover {
+  background-color: rgb(236, 123, 123);
+  color: white;
+}
+
+.accept {
+  width: 220px;
+}
+
+.opt {
+  margin: 20px auto;
+}

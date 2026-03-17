@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+#root {
+  padding: 0;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  background-color: rgb(250, 250, 250);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  padding: 0;
+  margin: auto;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  transition: 0.4ms;
+}
+
+a, button {
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: #929292;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.strip:nth-child(even) {
+  background-color: #f3f4f6; /* cinza claro */
+}
+
+.strip:nth-child(odd) {
+  background-color: #ffffff; /* branco */
+}
+
+.sub-item {
+  background-color: #e8ebec;
+}
