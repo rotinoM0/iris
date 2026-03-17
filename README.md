@@ -1,14 +1,18 @@
-# IRIS - Inventário, Registro e Integração de Sistema
+<div align="center">
+  <img align="center" src="https://github.com/user-attachments/assets/d9d65647-4957-4aca-a98c-3455ad0e0430" alt="iris logo">
+</div>
+
+---
+
+# Inventário, Registro e Integração de Sistema
 
 Um sistema completo e profissional de gerenciamento de inventário, desenvolvido com tecnologias modernas para oferecer uma experiência intuitiva e eficiente.
 
-<img width="1920" height="1020" alt="iris" src="https://github.com/user-attachments/assets/e340fd4e-d2b3-4688-811c-a4c84eed3a67" />
-
-## 🎯 Sobre o Projeto
+## Sobre o Projeto
 
 IRIS é uma solução integrada que combina um backend robusto com Node.js/Express e um frontend desktop elegante com Electron + React, permitindo o controle total do seu inventário de produtos, categorias e histórico de transações.
 
-## 🚀 Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 ### Backend
 - **Node.js** com Express.js
@@ -23,7 +27,7 @@ IRIS é uma solução integrada que combina um backend robusto com Node.js/Expre
 - **TailwindCSS** para estilização
 - **Axios** para requisições HTTP
 
-## 📋 Funcionalidades
+## Funcionalidades
 
 - ✅ Autenticação de usuários
 - ✅ Gerenciamento de categorias de produtos
@@ -34,7 +38,9 @@ IRIS é uma solução integrada que combina um backend robusto com Node.js/Expre
 - ✅ Preços unitários configuráveis
 - ✅ Aplicação desktop com Electron
 
-## 🛠️ Instalação
+<img width="1920" height="1020" alt="iris" src="https://github.com/user-attachments/assets/e340fd4e-d2b3-4688-811c-a4c84eed3a67" />
+
+## Instalação
 
 ### Pré-requisitos
 - Node.js (v14 ou superior)
@@ -60,7 +66,7 @@ cd frontend
 npm run build
 ```
 
-## 📂 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 iris/
@@ -88,7 +94,7 @@ iris/
 └── README.md
 ```
 
-## 🔧 Variáveis de Ambiente
+## Variáveis de Ambiente
 
 Crie um arquivo `.env` na pasta backend com as seguintes variáveis:
 
@@ -103,10 +109,10 @@ CLOUDINARY_KEY=          # API Key da conta Cloudinary
 CLOUDINARY_SECRET=       # API Secret da conta Cloudinary
 ```
 
-## 📝 Licença
+## Licença
 
 Este projeto está licenciado sob a Licença MIT.
 
-## 👨‍💻 Autor
+## Autor
 
 Sistema desenvolvido por Matheus Fernandes para gerenciamento eficiente de inventários.
