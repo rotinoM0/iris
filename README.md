@@ -2,6 +2,8 @@
 
 Um sistema completo e profissional de gerenciamento de inventário, desenvolvido com tecnologias modernas para oferecer uma experiência intuitiva e eficiente.
 
+<img width="1920" height="1020" alt="iris" src="https://github.com/user-attachments/assets/e340fd4e-d2b3-4688-811c-a4c84eed3a67" />
+
 ## 🎯 Sobre o Projeto
 
 IRIS é uma solução integrada que combina um backend robusto com Node.js/Express e um frontend desktop elegante com Electron + React, permitindo o controle total do seu inventário de produtos, categorias e histórico de transações.
