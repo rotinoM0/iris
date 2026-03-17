@@ -16,7 +16,7 @@ IRIS é uma solução integrada que combina um backend robusto com Node.js/Expre
 
 ### Backend
 - **Node.js** com Express.js
-- **Banco de Dados** Relacional
+- **Banco de Dados** NoSQL
 - **Autenticação** JWT
 - **Upload de Imagens** Multer
 
