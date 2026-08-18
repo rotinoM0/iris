@@ -1,6 +1,8 @@
 import User from "../models/user.js"
+import { validateRegister, validateLogin } from "../utils/validate.js"
 
 import pkg from "jsonwebtoken";
+import config from "../config/env.js";
 
 const { sign } = pkg;
 
@@ -19,6 +21,7 @@ const getUser = async (id) => {
 }
 
 const register = async (nome, senha) => {
+    validateRegister({ nome, senha });
     const user = await User.findOne({ nome });
     if (user) {
         const err = new Error("Usuário já cadastrado");
@@ -30,44 +33,38 @@ const register = async (nome, senha) => {
 }
 
 const login = async (nome, senha) => {
+    validateLogin({ nome, senha });
+    const unauthorized = () => {
+        const err = new Error("Usuário ou senha incorretos")
+        err.statusCode = 401;
+        return err;
+    }
+
     const user = await User.findOne({ nome }).select("+senha");
     if (!user) {
-        const err = new Error("Usuário não encontrado")
-        err.statusCode = 404;
-        throw err;
+        throw unauthorized();
     }
 
     const match = await user.matchPassword(senha);
     if (!match) {
-        const err = new Error("Usuário ou senha incorreta");
-        err.statusCode = 401;
-        throw err;
+        throw unauthorized();
     }
     const token = sign(
         { _id: user._id, nome: user.nome },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
+        config.jwtSecret,
+        { expiresIn: config.jwtExpire || "7d" }
     )
 
-
-    return token;
+    return {
+        token,
+        user: {
+            nome: user.nome,
+            cargo: user.cargo
+        }
+    };
 }
 
 
-
-// const loginAdmin = async(nome, senha) => {
-//     if (nome === "Admin" && senha === "admin") {
-//         const token = sign({nome}, process.env.JWT_SECRET, {expiresIn: "7d"})
-//         return token;
-//     }
-//     const user = await User.findOne({nome, senha});
-//     if (!user) {
-//         const err = new Error("Usuário ou senha incorretos");
-//         err.statusCode = 401;
-//         throw err
-//     }
-//     return user;
-// }
 
 export default {
     getAllUsers,

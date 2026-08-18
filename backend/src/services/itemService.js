@@ -1,5 +1,6 @@
 import item from "../models/item.js";
 import cloudinary from "../config/upload.js";
+import { validateItem, sanitizeFilter } from "../utils/validate.js";
 
 async function updateTotalStock(id) {
     const itens = await item.findById(id);
@@ -10,15 +11,16 @@ const getAllItems = async (filter) => {
     try {
         let itens;
         if (filter) {
+            const safeFilter = sanitizeFilter(filter);
             try {
                 itens = await item.find({
                     $or: [
-                        { nome: { $regex: filter, $options: 'i' } },
-                        { catProduto: { $regex: filter, $options: 'i' } },
-                        { catModelo: { $regex: filter, $options: 'i' } },
-                        { codigo: { $regex: filter, $options: 'i' } },
-                        { "var.codigo": { $regex: filter, $options: 'i' } },
-                        { "var.cor": { $regex: filter, $options: 'i' } }
+                        { nome: { $regex: safeFilter, $options: 'i' } },
+                        { catProduto: { $regex: safeFilter, $options: 'i' } },
+                        { catModelo: { $regex: safeFilter, $options: 'i' } },
+                        { codigo: { $regex: safeFilter, $options: 'i' } },
+                        { "var.codigo": { $regex: safeFilter, $options: 'i' } },
+                        { "var.cor": { $regex: safeFilter, $options: 'i' } }
                     ]
                 });
             } catch (error) {
@@ -56,14 +58,15 @@ const getVarEstoque = async (id, varCodigo) => {
 }
 
 const addItem = async (nome, catProduto, catModelo, codigo, preco, imagem) => {
-    if (preco <= 0) preco = 0
+    validateItem({ nome, catProduto, codigo, preco });
+    const precoFinal = Number(preco);
     const newItem = await new item(
         {
             nome: nome,
             catProduto: catProduto,
             catModelo: catModelo,
-            codigo: codigo.padStart(2, "0"),
-            preco: Number(preco),
+            codigo: String(codigo).padStart(2, "0"),
+            preco: Number.isNaN(precoFinal) || precoFinal < 0 ? 0 : precoFinal,
             imagem: imagem,
         }).save();
     return newItem;

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import config from "../../../config";
 import { Plus, Upload } from "lucide-react";
 import axios from "axios";
+import axiosInstance from "../../../services/api";
 import addHistory from "../../../services/historyService";
 
 export default function Produto() {
@@ -38,7 +39,7 @@ export default function Produto() {
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const response = await axios.get(`${config.dev.apiUrl}/categories`);
+                const response = await axiosInstance.get(`${config.dev.apiUrl}/categories`);
                 setCategorias(response.data.data);
             } catch (err) {
                 console.error(err);
@@ -74,7 +75,7 @@ export default function Produto() {
 
         try {
             let codigo = 1;
-            const produtoRes = await axios.get(`${config.dev.apiUrl}/items/categorias/${catProduto}`);
+            const produtoRes = await axiosInstance.get(`${config.dev.apiUrl}/items/categorias/${catProduto}`);
             const actualModel = produtoRes.data.data.map((item: { catModelo: unknown }) => item.catModelo);
             const actualCodes = produtoRes.data.data.map((item: { codigo: unknown; }) => item.codigo);
             actualModel.forEach((model: unknown) => {
@@ -102,7 +103,7 @@ export default function Produto() {
                 quantidade: 0
             })
             
-            await axios.post(`${config.dev.apiUrl}/items`, formData);
+            await axiosInstance.post(`${config.dev.apiUrl}/items`, formData);
 
             resetForm();
             window.dispatchEvent(new CustomEvent('itemsUpdated'))

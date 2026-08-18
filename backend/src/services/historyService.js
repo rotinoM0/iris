@@ -1,14 +1,16 @@
 import historico from "../models/history.js";
+import { sanitizeFilter } from "../utils/validate.js";
 
 const getHistory = async (filter, type) => {
     try {  
         if (filter) {
+            const safeFilter = sanitizeFilter(filter);
             const history = await historico.find({
                 $or: [
-                    { item: { $regex: filter, $options: 'i' } },
-                    { data: { $regex: filter, $options: 'i' } },
-                    { observacao: { $regex: filter, $options: 'i' } },
-                    { usuario: { $regex: filter, $options: 'i' } }
+                    { item: { $regex: safeFilter, $options: 'i' } },
+                    { data: { $regex: safeFilter, $options: 'i' } },
+                    { observacao: { $regex: safeFilter, $options: 'i' } },
+                    { usuario: { $regex: safeFilter, $options: 'i' } }
                 ]
             }).sort({ data: -1 });
 

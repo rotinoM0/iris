@@ -3,7 +3,7 @@ import "../Modal.css"
 import "../ColorMan.css"
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import axios from "axios";
+import axiosInstance from "../../../services/api";
 import config from "../../../config";
 import { Filter, RefreshCcw, Search, History } from "lucide-react";
 
@@ -18,7 +18,7 @@ export default function Histórico() {
 
     const loadHistorico = useCallback(async () => {
         try {
-            const historyRes = (await axios.get(`${config.dev.apiUrl}/history${type ? `?type=${type}` : ""}${filter ? (type ? "&" : "?") + `filter=${filter}` : ""}`)).data.data
+            const historyRes = (await axiosInstance.get(`${config.dev.apiUrl}/history${type ? `?type=${type}` : ""}${filter ? (type ? "&" : "?") + `filter=${filter}` : ""}`)).data.data
             setHistorico(historyRes)
         } catch (err) {
             setErrorMessage("Erro ao carregar histórico. " + err);

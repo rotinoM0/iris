@@ -3,6 +3,7 @@ import "../Modal.css"
 import "./Edit.css"
 import { SquarePen, Upload } from "lucide-react"
 import axios from "axios"
+import axiosInstance from "../../../services/api"
 import config from "../../../config"
 import addHistory from "../../../services/historyService"
 
@@ -23,7 +24,7 @@ export default function EditItem({ id }: { id: string }) {
     const itemsToUpdate: unknown[] = []
 
     useEffect(() => {
-        axios.get(`${config.dev.apiUrl}/items/${id}`).then(res => {
+        axiosInstance.get(`${config.dev.apiUrl}/items/${id}`).then(res => {
 
             const itemToUpdate = res.data.data;
 
@@ -38,7 +39,7 @@ export default function EditItem({ id }: { id: string }) {
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const response = await axios.get(`${config.dev.apiUrl}/categories`);
+                const response = await axiosInstance.get(`${config.dev.apiUrl}/categories`);
                 setCategorias(response.data.data);
             } catch (err) {
                 console.error(err);
@@ -69,13 +70,13 @@ export default function EditItem({ id }: { id: string }) {
         }
 
         try {
-            const codigo = await axios.get(`${config.dev.apiUrl}/items/${id}`).then(res => res.data.data.codigo);
+            const codigo = await axiosInstance.get(`${config.dev.apiUrl}/items/${id}`).then(res => res.data.data.codigo);
             await addHistory({
                 item: `${catProduto} ${catModelo} ${codigo}`,
                 tipo: "alterado",
                 quantidade: 0
             })
-            await axios.patch(`${config.dev.apiUrl}/items/${id}`, formData);
+            await axiosInstance.patch(`${config.dev.apiUrl}/items/${id}`, formData);
             window.dispatchEvent(new Event('itemsUpdated'))
             setIsLoading(false);
             setIsOpen(false)

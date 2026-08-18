@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Copy, Filter, Package, Search, TrendingUp } from "lucide-react"
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts"
 
-import axios from "axios"
+import axiosInstance from "../../services/api"
 import config from "../../config"
 
 import Header from "../../components/header/Header"
@@ -53,7 +53,7 @@ export default function Dashboard() {
 
     const loadItems = async (filter?: string) => {
         const url = filter ? `${config.dev.apiUrl}/items/?filter=${filter}` : `${config.dev.apiUrl}/items`
-        await axios.get(url).then((res) => {
+        await axiosInstance.get(url).then((res) => {
             if (res.data.success)
                 return setItems(res.data.data as Item[])
             else return alert(res.data.message)
@@ -61,11 +61,11 @@ export default function Dashboard() {
     }
 
     const countItems = async () => {
-        return setTotalItems(await axios.get(`${config.dev.apiUrl}/items`).then(res => res.data.data.length).catch(() => ":("))
+        return setTotalItems(await axiosInstance.get(`${config.dev.apiUrl}/items`).then(res => res.data.data.length).catch(() => ":("))
     }
 
     const calcItemsValue = async () => {
-        const itemVal = await axios.get(`${config.dev.apiUrl}/items`).then(res => {
+        const itemVal = await axiosInstance.get(`${config.dev.apiUrl}/items`).then(res => {
             return res.data.data.map((item: { preco: number; estoqueTotal: number }) => {
                 return (item.preco as number) * (item.estoqueTotal as number);
             })

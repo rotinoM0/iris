@@ -23,13 +23,11 @@ const getUser = async (req, res, next) => {
 const login = async (req, res, next) => {
     try {
         const {nome, senha} = req.body;
-        const user = await userService.login(nome, senha);
+        const result = await userService.login(nome, senha);
         res.status(200).json({
-            success: true, 
-            token: user, 
-            user: {
-                nome: nome
-            }
+            success: true,
+            token: result.token,
+            user: result.user
         });
     } catch (error) {
         next(error);

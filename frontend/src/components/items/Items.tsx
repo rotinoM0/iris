@@ -1,6 +1,6 @@
 
 import { useEffect, useState, Fragment} from "react"
-import axios from "axios"
+import axiosInstance from "../../services/api"
 
 import EditItem from "../../modules/modals/edit/Edit"
 import KebabMenu from "../../modules/kebab/KebabMenu"
@@ -47,14 +47,14 @@ export default function Items() {
         setErrorMessage("")
 
         if (filter) {
-            axios.get(`${config.dev.apiUrl}/items/?filter=${filter}`).then((res) => {
+            axiosInstance.get(`${config.dev.apiUrl}/items/?filter=${filter}`).then((res) => {
                 if (res.data.success)
                     return setContent(res.data.data as Item[])
                 else return alert(res.data.message)
             })
         }
 
-        axios.get(`${config.dev.apiUrl}/items`).then((res) => {
+        axiosInstance.get(`${config.dev.apiUrl}/items`).then((res) => {
             if (res.data.success) {
                 setIsLoading(false)
                 setErrorMessage("")

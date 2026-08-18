@@ -2,7 +2,7 @@ import "./Categoria.css"
 import "../ColorMan.css"
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import axios from "axios";
+import axiosInstance from "../../../services/api";
 import config from "../../../config";
 import "../Modal.css"
 import { ChevronRight, Edit, Package, Plus, Trash } from "lucide-react";
@@ -24,7 +24,7 @@ export default function Categoria() {
     const [modelCode, setModelCode] = useState("")
 
     const loadCategories = async () => {
-        const res = await axios.get(`${config.dev.apiUrl}/categories`).then(res => res.data.data).catch(() => []);
+        const res = await axiosInstance.get(`${config.dev.apiUrl}/categories`).then(res => res.data.data).catch(() => []);
         return setContent(res);
     }
 
@@ -53,7 +53,7 @@ export default function Categoria() {
             }]
         }
 
-        await axios.post(`${config.dev.apiUrl}/categories`, newCategory)
+        await axiosInstance.post(`${config.dev.apiUrl}/categories`, newCategory)
 
         setCategoryName("")
         setCategoryCode("")
@@ -73,14 +73,14 @@ export default function Categoria() {
             codigo: modelCode.toUpperCase()
         }
 
-        await axios.get(`${config.dev.apiUrl}/categories/${categoryId}`).then(res => {
+        await axiosInstance.get(`${config.dev.apiUrl}/categories/${categoryId}`).then(res => {
             const category = res.data.data
             if (category.modelos.some((mod: { codigo: string }) => mod.codigo === newModel.codigo)) {
                 setErrorMessage("Código de modelo já existe nessa categoria.")
                 return
             }
         })
-        await axios.patch(`${config.dev.apiUrl}/categories/${categoryId}`, newModel)
+        await axiosInstance.patch(`${config.dev.apiUrl}/categories/${categoryId}`, newModel)
         setModelName("")
         setModelCode("")
         setAddModelOpen("")
@@ -95,13 +95,13 @@ export default function Categoria() {
 
     const deleteCategory = async (id: string) => {
         if (!confirm("Excluir esta categoria e todos os seus modelos?")) return
-        await axios.delete(`${config.dev.apiUrl}/categories/${id}`)
+        await axiosInstance.delete(`${config.dev.apiUrl}/categories/${id}`)
         window.dispatchEvent(new CustomEvent('categoriesUpdated'))
     }
 
     const deleteModel = async (id: string, codigo: string) => {
         if (!confirm("Excluir este modelo?")) return
-        await axios.patch(`${config.dev.apiUrl}/categories/${id}/modelos`, { codigo: codigo })
+        await axiosInstance.patch(`${config.dev.apiUrl}/categories/${id}/modelos`, { codigo: codigo })
         window.dispatchEvent(new CustomEvent('categoriesUpdated'))
     }
     return (

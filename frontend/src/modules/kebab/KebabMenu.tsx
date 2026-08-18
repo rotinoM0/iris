@@ -2,7 +2,7 @@ import { EllipsisVertical, Trash } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import "./KebabMenu.css"
-import axios from "axios";
+import axiosInstance from "../../services/api";
 import config from "../../config";
 import addHistory from "../../services/historyService";
 
@@ -12,13 +12,13 @@ function KebabMenu({ options, id }: { options: { label: React.ReactNode; action:
     
     const deleteItem = async () => {
         try {
-            const item = await axios.get(`${config.dev.apiUrl}/items/${id}`).then(res => res.data.data)
+            const item = await axiosInstance.get(`${config.dev.apiUrl}/items/${id}`).then(res => res.data.data)
             await addHistory({
                 item: `${item.catProduto} ${item.catModelo} ${item.codigo}`,
                 tipo: "removido",
                 quantidade: 0
             })
-            await axios.delete(`${config.dev.apiUrl}/items/${id}`)
+            await axiosInstance.delete(`${config.dev.apiUrl}/items/${id}`)
             window.dispatchEvent(new CustomEvent('itemsUpdated'))
         } catch (err) {
             (window as unknown as Window).dispatchEvent(new CustomEvent('itemsUpdated'))
