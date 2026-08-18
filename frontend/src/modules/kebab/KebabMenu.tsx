@@ -9,6 +9,8 @@ import addHistory from "../../services/historyService";
 function KebabMenu({ options, id }: { options: { label: React.ReactNode; action: () => void }[]; id: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null)
+
+    const isAdmin = JSON.parse(localStorage.getItem("user") || '{}').cargo === "admin";
     
     const deleteItem = async () => {
         try {
@@ -53,13 +55,15 @@ function KebabMenu({ options, id }: { options: { label: React.ReactNode; action:
                             </button>
                         ))}
 
-                        <button
-                            className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2"
-                            onClick={() => {setIsOpen(false); deleteItem()} }
-                        >
-                            <Trash width={15} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                            Deletar
-                        </button>
+                        {isAdmin && (
+                            <button
+                                className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2"
+                                onClick={() => {setIsOpen(false); deleteItem()} }
+                            >
+                                <Trash width={15} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                                Deletar
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
