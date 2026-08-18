@@ -15,8 +15,9 @@ const itemSchema = new mongoose.Schema(
             type: Number
         },
         data: {
-            type: String,
-            required: true
+            type: Date,
+            required: true,
+            default: Date.now
         },
         observacao: {
             type: String

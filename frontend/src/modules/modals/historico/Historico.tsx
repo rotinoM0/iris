@@ -96,7 +96,7 @@ export default function Histórico() {
                                 <tbody>
                                     {historico.map((item: { _id: string; data: string; item: string; tipo: string; quantidade: number; observacao: string; usuario: string }) => (
                                         <tr className="strip" key={item._id}>
-                                            <td className=" font-bold">{item.data.slice(0, 16).replace("-", "/").replace("-", "/").replace("T", " ")}</td>
+                                            <td className=" font-bold">{new Date(item.data).toLocaleString('pt-BR')}</td>
                                             <td>{item.item}</td>
                                             <td>{item.tipo}</td>
                                             <td>{item.quantidade}</td>

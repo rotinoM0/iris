@@ -8,7 +8,6 @@ const getHistory = async (filter, type) => {
             const history = await historico.find({
                 $or: [
                     { item: { $regex: safeFilter, $options: 'i' } },
-                    { data: { $regex: safeFilter, $options: 'i' } },
                     { observacao: { $regex: safeFilter, $options: 'i' } },
                     { usuario: { $regex: safeFilter, $options: 'i' } }
                 ]
@@ -32,11 +31,21 @@ const getHistory = async (filter, type) => {
 }
 
 const addHistory = async (item, tipo, quantidade, data, observacao, usuario) => {
+    let dataDate = data;
+    if (data) {
+        const parsed = new Date(data);
+        if (Number.isNaN(parsed.getTime())) {
+            const err = new Error("Data inválida");
+            err.statusCode = 400;
+            throw err;
+        }
+        dataDate = parsed;
+    }
     const newHistory = await new historico({
         item: item,
         tipo: tipo,
         quantidade: quantidade,
-        data: data,
+        data: dataDate,
         observacao: observacao,
         usuario: usuario
     }).save();
