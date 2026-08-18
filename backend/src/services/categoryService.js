@@ -15,11 +15,15 @@ const getModelsById = async (id) => {
     return categoryData;
 };
 
-const add = async (produto, codigo, categorias, modelos) => {
+const add = async (produto, codigo, modelos) => {
+    if (!produto || !codigo) {
+        const err = new Error("Produto e código são obrigatórios");
+        err.statusCode = 400;
+        throw err;
+    }
     const newCategory = await new category({
         produto: produto,
         codigo: codigo,
-        categorias: categorias || [],
         modelos: modelos || []
     }).save();
     return newCategory;

@@ -22,10 +22,15 @@ const getItem = async (req, res, next) => {
         const { varCodigo } = req.query;
         if (varCodigo) {
             const item = await itemService.getVarEstoque(id, varCodigo);
-            res.status(200).json({ success: true, data: item });
+            return res.status(200).json({ success: true, data: item });
         }
         const item = await itemService.getItem(id);
-        res.status(200).json({ success: true, data: item });
+        if (!item) {
+            const err = new Error("Item não encontrado");
+            err.statusCode = 404;
+            throw err;
+        }
+        return res.status(200).json({ success: true, data: item });
     } catch (error) {
         next(error);
     }
@@ -45,7 +50,7 @@ const getVarEstoque = async (req, res, next) => {
     try {
         const { id } = req.params;
         const itemData = await itemService.getItem(id);
-        const varEstoque = itemData.var.map(variacao => ({
+        const varEstoque = (itemData?.var || []).map(variacao => ({
             codigo: variacao.codigo,
             estoque: variacao.estoque
         }));
@@ -59,6 +64,7 @@ const addItem = async (req, res, next) => {
     try {
         const { nome, catProduto, catModelo, codigo, preco } = req.body
 
+        let imagem;
         if (req.file) {
             const uploadRes = await new Promise((resolve, reject) => {
                 upload.cloudinary.uploader.upload_stream(
@@ -75,22 +81,21 @@ const addItem = async (req, res, next) => {
                     },
                 ).end(req.file.buffer);
             });
-            const imagem = {
+            imagem = {
                 url: uploadRes.secure_url,
-                name: uploadRes.public_id
+                public_id: uploadRes.public_id
             }
-            await itemService.addItem(
-                nome,
-                catProduto,
-                catModelo,
-                codigo,
-                preco,
-                imagem
-            );
-        } else {
-            await itemService.addItem(nome, catProduto, catModelo, codigo, preco, imagem);
         }
-        await res.status(201).json(itemService.getAllItems())
+        await itemService.addItem(
+            nome,
+            catProduto,
+            catModelo,
+            codigo,
+            preco,
+            imagem
+        );
+        const itens = await itemService.getAllItems();
+        res.status(201).json(itens)
     } catch (err) {
         next(err)
     }
@@ -119,9 +124,10 @@ const updatedItem = async (req, res, next) => {
             preco
         }
         if (req.file) {
-            const currentImagem = await itemService.getItem(id).then(item => item.imagem);
-            if (currentImagem.public_id)
-                await cloudinary.deleteImage(currentImagem.public_id);
+            const currentItem = await itemService.getItem(id);
+            const currentPublicId = currentItem?.imagem?.public_id || currentItem?.imagem?.name;
+            if (currentPublicId)
+                await cloudinary.deleteImage(currentPublicId);
             const uploadRes = await new Promise((resolve, reject) => {
                 upload.cloudinary.uploader.upload_stream(
                     {
@@ -145,7 +151,8 @@ const updatedItem = async (req, res, next) => {
         }
 
         await itemService.updateItem(id, updateData);
-        await res.status(201).json(itemService.getAllItems())
+        const itens = await itemService.getAllItems();
+        res.status(200).json(itens)
     } catch (err) {
         next(err)
     }
@@ -155,7 +162,7 @@ const deleteItem = async (req, res, next) => {
     try {
         const { id } = req.params
         await itemService.deleteItem(id);
-        await res.status(201).json({ success: true, data: "deletado" })
+        res.status(200).json({ success: true, data: "deletado" })
     } catch (err) {
         next(err)
     }
@@ -166,7 +173,7 @@ const deleteVar = async (req, res, next) => {
         const { id } = req.params
         const { codigo } = req.body
         await itemService.deleteVar(id, codigo);
-        await res.status(201).json({ success: true, data: "deletado" })
+        res.status(200).json({ success: true, data: "deletado" })
     } catch (err) {
         next(err)
     }

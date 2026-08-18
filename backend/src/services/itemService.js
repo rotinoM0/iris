@@ -4,7 +4,9 @@ import { validateItem, sanitizeFilter } from "../utils/validate.js";
 
 async function updateTotalStock(id) {
     const itens = await item.findById(id);
-    return await item.findByIdAndUpdate(id, { estoqueTotal: itens.var.reduce((total, v) => total + v.estoque, 0) });
+    if (!itens) return null;
+    const estoqueTotal = (itens.var || []).reduce((total, v) => total + (Number(v.estoque) || 0), 0);
+    return await item.findByIdAndUpdate(id, { estoqueTotal }, { new: true });
 }
 
 const getAllItems = async (filter) => {
@@ -74,7 +76,7 @@ const addItem = async (nome, catProduto, catModelo, codigo, preco, imagem) => {
 
 const updateItem = async (id, updateData) => {
     try {
-        const updatedItem = await item.findByIdAndUpdate(id, updateData, { new: true });
+        const updatedItem = await item.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
         return updatedItem;
     } catch (error) {
         console.error(error);
@@ -84,13 +86,24 @@ const updateItem = async (id, updateData) => {
 
 const updateVarEstoque = async (id, codigo, estoque) => {
     try {
+        const numero = Number(estoque);
+        if (estoque === undefined || estoque === null || estoque === "" || Number.isNaN(numero) || numero < 0 || !Number.isInteger(numero)) {
+            const err = new Error("Estoque deve ser um número inteiro maior ou igual a 0");
+            err.statusCode = 400;
+            throw err;
+        }
         const updatedItem = await item.findOneAndUpdate({
             _id: id,
             "var.codigo": codigo
         },
-            { $set: { "var.$.estoque": estoque } },
+            { $set: { "var.$.estoque": numero } },
             { new: true }
         );
+        if (!updatedItem) {
+            const err = new Error("Variação não encontrada");
+            err.statusCode = 404;
+            throw err;
+        }
         await updateTotalStock(id);
         return updatedItem;
     } catch (error) {
@@ -100,16 +113,22 @@ const updateVarEstoque = async (id, codigo, estoque) => {
 }
 
 const deleteItem = async (id) => {
-    try {
-        const delItem = await item.findByIdAndDelete(id)
-        if (!delItem) {
-            const err = new Error("item não encontrado");
-            err.statusCode = 404;
-            throw err;
-        }
-    } catch (error) {
-        console.error(error);
+    const existing = await item.findById(id);
+    if (!existing) {
+        const err = new Error("item não encontrado");
+        err.statusCode = 404;
+        throw err;
     }
+    const publicId = existing.imagem?.public_id;
+    if (publicId) {
+        try {
+            await cloudinary.deleteImage(publicId);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    await item.findByIdAndDelete(id);
+    return existing;
 }
 
 const deleteVar = async (id, codigo) => {
@@ -122,6 +141,7 @@ const deleteVar = async (id, codigo) => {
         return delVar;
     } catch (error) {
         console.error(error);
+        throw error;
     }
 }
 

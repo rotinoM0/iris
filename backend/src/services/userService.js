@@ -28,8 +28,17 @@ const register = async (nome, senha) => {
         err.statusCode = 409;
         throw err;
     }
-    const newUser = await new User({ nome, senha }).save();
-    return newUser;
+    try {
+        const newUser = await new User({ nome, senha }).save();
+        return newUser;
+    } catch (error) {
+        if (error?.code === 11000) {
+            const err = new Error("Usuário já cadastrado");
+            err.statusCode = 409;
+            throw err;
+        }
+        throw error;
+    }
 }
 
 const login = async (nome, senha) => {

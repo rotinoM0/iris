@@ -38,7 +38,7 @@ const register = async (req, res, next) => {
     try {
         const {nome, senha} = req.body;
         const user = await userService.register(nome, senha);
-        res.status(201).json({success: true, data: user});
+        res.status(201).json({success: true, data: {nome: user.nome, cargo: user.cargo}});
     } catch (error) {
         next(error);
     }

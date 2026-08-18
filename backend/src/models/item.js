@@ -33,15 +33,23 @@ const itemSchema = new mongoose.Schema(
                 url: String,
                 public_id: String
             },
+            _id: false
         },
-
-        estoque: {
-            type: Number,
-            min: [0, "Estoque precisa ser maior ou igual a 0"],
-            required: true,
-            default: 0,
-            trim: true
-        }
+        var: [
+            {
+                codigo: {
+                    type: String
+                },
+                cor: {
+                    type: String
+                },
+                estoque: {
+                    type: Number,
+                    min: [0, "Estoque precisa ser maior ou igual a 0"],
+                    default: 0
+                }
+            }
+        ]
     }
 )
 
