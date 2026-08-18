@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // │ │
 // │ ├─┬ dist-electron
 // │ │ ├── main.js
-// │ │ └── preload.mjs
+// │ │ └── preload.cjs
 // │
 process.env.APP_ROOT = path.join(__dirname, '..')
 
@@ -26,28 +26,22 @@ let win: BrowserWindow | null
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(__dirname, '../src/assets/icon.png'),
     minWidth: 1024,
     minHeight: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs')
+      preload: path.join(__dirname, 'preload.cjs'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
     },
   })
 
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
-  
   win.maximize()
   win.menuBarVisible = false
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
   } else {
-    // win.loadFile('dist/index.html')
-    const indexPath = path.join(RENDERER_DIST, 'index.html')
-    console.log('📁 Loading file from:', indexPath) // log para debug
-    win.loadFile(indexPath)
+    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
 }
 
@@ -69,6 +63,6 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(() => {  
-  createWindow();
+app.whenReady().then(() => {
+  createWindow()
 })
