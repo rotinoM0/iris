@@ -92,20 +92,32 @@ const updateVarEstoque = async (id, codigo, estoque) => {
             err.statusCode = 400;
             throw err;
         }
-        const updatedItem = await item.findOneAndUpdate({
-            _id: id,
-            "var.codigo": codigo
-        },
+        if (!codigo || typeof codigo !== "string") {
+            const err = new Error("Código da variação é obrigatório");
+            err.statusCode = 400;
+            throw err;
+        }
+        const updatedItem = await item.findOneAndUpdate(
+            { _id: id, "var.codigo": codigo },
             { $set: { "var.$.estoque": numero } },
             { new: true }
         );
-        if (!updatedItem) {
-            const err = new Error("Variação não encontrada");
+        if (updatedItem) {
+            await updateTotalStock(id);
+            return updatedItem;
+        }
+        const pushedItem = await item.findOneAndUpdate(
+            { _id: id },
+            { $push: { var: { codigo: codigo, estoque: numero } } },
+            { new: true, runValidators: true }
+        );
+        if (!pushedItem) {
+            const err = new Error("Item não encontrado");
             err.statusCode = 404;
             throw err;
         }
         await updateTotalStock(id);
-        return updatedItem;
+        return pushedItem;
     } catch (error) {
         console.error(error);
         throw error;

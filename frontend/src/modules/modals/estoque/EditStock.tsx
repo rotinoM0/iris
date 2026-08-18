@@ -17,7 +17,6 @@ function EditStock(id: { id: string; codigo: string | undefined }) {
     const [obs, setObs] = useState("")
 
     const [quantidade, setQuantidade] = useState(0)
-    let newEstoque = 0;
 
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
@@ -27,31 +26,39 @@ function EditStock(id: { id: string; codigo: string | undefined }) {
         let changeType = ""
 
         if (!tipo || !quantidade) return setErrorMessage("Preencha todos os campos");
+        if (tipo === "ent") {
+            changeType = "entrada"
+        } else if (tipo === "sai") {
+            changeType = "saida"
+        } else if (tipo === "bal") {
+            changeType = "balanco"
+        }
+
         try {
             setErrorMessage("");
-            const varsRes = ((await axiosInstance.get(`${config.dev.apiUrl}/items/${id.id}/estoque?codigo=${id.codigo?.toString()}`)).data.data);
-            varsRes.forEach((element: { codigo: string; estoque: number }) => {
-                if (element.codigo === id.codigo) {
-                    if (tipo === "ent") {
-                        newEstoque = element.estoque + quantidade;
-                        changeType = "entrada"
-                    } else if (tipo === "sai") {
-                        newEstoque = element.estoque - quantidade;
-                        changeType = "saida"
-                    } else if (tipo === "bal") {
-                        newEstoque = quantidade;
-                        changeType = "balanco"
-                    }
-                }
-            });
-            
+            const itemRes = (await axiosInstance.get(`${config.dev.apiUrl}/items/${id.id}`)).data.data;
+            const variante = (itemRes?.var || []).find((v: { codigo?: string }) => v.codigo === id.codigo);
+            const base = variante ? variante.estoque : itemRes?.estoqueTotal ?? 0;
+
+            let newEstoque = Number(base);
+            if (tipo === "ent") {
+                newEstoque += Number(quantidade);
+            } else if (tipo === "sai") {
+                newEstoque -= Number(quantidade);
+            } else if (tipo === "bal") {
+                newEstoque = Number(quantidade);
+            }
+
+            if (newEstoque < 0) return setErrorMessage("Estoque não pode ficar negativo");
+
+            const response = await axiosInstance.patch(`${config.dev.apiUrl}/items/${id.id}/estoque?codigo=${id.codigo?.toString()}`, { estoque: Number(newEstoque) })
+
             await addHistory({
                 item: id.codigo,
                 tipo: changeType,
                 quantidade: quantidade,
                 observacao: obs
             })
-            const response = await axiosInstance.patch(`${config.dev.apiUrl}/items/${id.id}/estoque?codigo=${id.codigo?.toString()}`, { estoque: Number(newEstoque) })
             window.dispatchEvent(new CustomEvent('itemsUpdated'))
 
             setTipo("bal")

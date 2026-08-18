@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Copy, Filter, Package, Search, TrendingUp } from "lucide-react"
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts"
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
 
 import axiosInstance from "../../services/api"
 import config from "../../config"
@@ -36,10 +36,21 @@ type Item = {
     }
 }
 
+type HistoryItem = {
+    _id: string
+    item: string
+    tipo: string
+    quantidade: number
+    data: string
+    observacao?: string
+    usuario: string
+}
+
 export default function Dashboard() {
     const [totalItems, setTotalItems] = useState(0)
     const [totalItemsValue, setTotalItemsValue] = useState(0)
     const [items, setItems] = useState<Item[]>([])
+    const [history, setHistory] = useState<HistoryItem[]>([])
     const [currentGraph, setCurrentGraph] = useState("")
 
     const [filter, setFilter] = useState("")
@@ -73,6 +84,46 @@ export default function Dashboard() {
         const totalVal = itemVal.reduce((acc: number, val: number) => acc + val, 0);
         setTotalItemsValue(totalVal);
     }
+
+    const loadHistory = async () => {
+        const historyRes = await axiosInstance.get(`${config.dev.apiUrl}/history`).then(res => res.data.data).catch(() => []);
+        setHistory(historyRes);
+    }
+
+    const totalEntradas = history.filter(h => h.tipo === "entrada").reduce((acc, h) => acc + (Number(h.quantidade) || 0), 0)
+    const totalSaidas = history.filter(h => h.tipo === "saida").reduce((acc, h) => acc + (Number(h.quantidade) || 0), 0)
+
+    const valueByCat = useMemo(() => {
+        const acc: { [key: string]: number } = {}
+        items.forEach(item => {
+            const cat = item.catProduto || "Sem Categoria";
+            const val = (Number(item.preco) || 0) * (Number(item.estoqueTotal) || 0);
+            acc[cat] = (acc[cat] || 0) + val;
+        })
+        return Object.entries(acc).map(([name, value]) => ({ name, value }));
+    }, [items])
+
+    const entradaData = useMemo(() => {
+        const acc: { [key: string]: number } = {}
+        history.filter(h => h.tipo === "entrada").forEach(h => {
+            const day = new Date(h.data).toLocaleDateString("pt-BR");
+            acc[day] = (acc[day] || 0) + (Number(h.quantidade) || 0);
+        })
+        return Object.entries(acc)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([day, quantidade]) => ({ day, quantidade }));
+    }, [history])
+
+    const saidaData = useMemo(() => {
+        const acc: { [key: string]: number } = {}
+        history.filter(h => h.tipo === "saida").forEach(h => {
+            const day = new Date(h.data).toLocaleDateString("pt-BR");
+            acc[day] = (acc[day] || 0) + (Number(h.quantidade) || 0);
+        })
+        return Object.entries(acc)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([day, quantidade]) => ({ day, quantidade }));
+    }, [history])
 
     const itemsGroup = useMemo(() => {
 
@@ -110,11 +161,13 @@ export default function Dashboard() {
         window.addEventListener('itemsUpdated', countItems)
         window.addEventListener('itemsUpdated', calcItemsValue)
         window.addEventListener('itemsUpdated', () => loadItems())
+        window.addEventListener('itemsUpdated', loadHistory)
 
         return () => {
             window.removeEventListener('itemsUpdated', countItems);
             window.removeEventListener('itemsUpdated', calcItemsValue);
             window.removeEventListener('itemsUpdated', () => loadItems);
+            window.removeEventListener('itemsUpdated', loadHistory);
         }
     }, [])
 
@@ -122,6 +175,7 @@ export default function Dashboard() {
         countItems()
         calcItemsValue()
         loadItems()
+        loadHistory()
     }, [])
 
     const handleGraph = async (graph: string) => {
@@ -174,14 +228,46 @@ export default function Dashboard() {
                                 <h2 className="text-xl font-bold">{Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(totalItemsValue))}</h2>
                             </div>
                         </div>
+                        <div className={`transition duration-500 ${currentGraph === "valor" ? "opacity-100" : "opacity-0"}`}>
+                            <ResponsiveContainer width={300} height={200}>
+                                <PieChart>
+                                    <Pie
+                                        data={valueByCat}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={({ name }) => name}
+                                        outerRadius={80}
+                                        fill="#8884d8">
+                                        {valueByCat.map((_entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip formatter={(value) => Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(value))} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                     <div className={`border-2 border-gray-300 overflow-hidden prod-box ${currentGraph === "entradas" ? "show-graph" : ""}`} onClick={() => handleGraph("entradas")}>
                         <div className="flex flex-col gap-3 items-center p-5">
                             <TrendingUp size={45} color="#000000ff" />
                             <div className="text-black text-center content">
                                 <p>Entradas</p>
-                                <h2 className="text-xl font-bold">{0}</h2>
+                                <h2 className="text-xl font-bold">{totalEntradas}</h2>
                             </div>
+                        </div>
+                        <div className={`transition duration-500 ${currentGraph === "entradas" ? "opacity-100" : "opacity-0"}`}>
+                            <ResponsiveContainer width={300} height={200}>
+                                <BarChart data={entradaData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="quantidade" fill="#0088FE" />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
                     <div className={`border-2 border-gray-300 overflow-hidden prod-box ${currentGraph === "saidas" ? "show-graph" : ""}`} onClick={() => handleGraph("saidas")}>
@@ -189,8 +275,19 @@ export default function Dashboard() {
                             <TrendingUp size={45} color="#000000ff" />
                             <div className="text-black text-center content">
                                 <p>Saídas</p>
-                                <h2 className="text-xl font-bold">{0}</h2>
+                                <h2 className="text-xl font-bold">{totalSaidas}</h2>
                             </div>
+                        </div>
+                        <div className={`transition duration-500 ${currentGraph === "saidas" ? "opacity-100" : "opacity-0"}`}>
+                            <ResponsiveContainer width={300} height={200}>
+                                <BarChart data={saidaData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="quantidade" fill="#FF8042" />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
                 </div>

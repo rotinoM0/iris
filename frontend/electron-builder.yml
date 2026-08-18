@@ -19,6 +19,13 @@ mac:
     - dmg
 linux:
   target:
-    - AppImage
-    - deb
+    - target: AppImage
+      arch:
+        - x64
+  maintainer: Matheus Fernandes
   category: Utility
+  synopsis: Inventário, Registro e Integração de Sistema
+  artifactName: ${productName}-Linux-${arch}.${ext}
+  executableName: iris
+appImage:
+  artifactName: ${productName}-Linux-${arch}.${ext}
