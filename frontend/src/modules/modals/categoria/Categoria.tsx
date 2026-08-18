@@ -13,6 +13,8 @@ export default function Categoria() {
     const [content, setContent] = useState([])
     const [errorMessage, setErrorMessage] = useState("")
 
+    const isAdmin = JSON.parse(localStorage.getItem("user") || '{}').cargo === "admin";
+
     const [showModels, setShowModels] = useState("")
     const [addingCategory, setAddingCategory] = useState(false)
     const [addModelOpen, setAddModelOpen] = useState("")
@@ -134,7 +136,9 @@ export default function Categoria() {
 
 
                                         <div className="flex w-full justify-end items-center gap-4">
-                                            <a onClick={() => { deleteCategory(cat._id) }}><Trash color="red" /></a>
+                                            {isAdmin && (
+                                                <a onClick={() => { deleteCategory(cat._id) }}><Trash color="red" /></a>
+                                            )}
                                         </div>
 
                                     </div>
@@ -148,7 +152,9 @@ export default function Categoria() {
                                                         <pre className="border border-gray-300 text-xs text-gray-500 font-mono rounded-md px-2">{model.codigo}</pre>
                                                     </div>
                                                     <div className="w-full justify-end flex items-center gap-2">
-                                                        <a onClick={() => { if (model.codigo) deleteModel(cat._id, model.codigo) }}><Trash color="red" /></a>
+                                                        {isAdmin && (
+                                                            <a onClick={() => { if (model.codigo) deleteModel(cat._id, model.codigo) }}><Trash color="red" /></a>
+                                                        )}
                                                     </div>
                                                 </div>
                                             ))}

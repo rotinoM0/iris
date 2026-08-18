@@ -1,5 +1,6 @@
 import express from "express"
 import categoryController from "../controllers/categoryController.js"
+import isAdmin from "../middlewares/isAdmin.js"
 
 const router = express.Router()
 
@@ -10,8 +11,8 @@ router.get("/:id/modelos", categoryController.getModelsById);
 router.post("/", categoryController.add);
 
 router.patch("/:id", categoryController.addModel);
-router.patch("/:id/modelos", categoryController.deleteModel);
+router.patch("/:id/modelos", isAdmin, categoryController.deleteModel);
 
-router.delete("/:id", categoryController.deleteCategory);
+router.delete("/:id", isAdmin, categoryController.deleteCategory);
 
 export default router;
