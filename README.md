@@ -223,16 +223,6 @@ node scripts/migrate-to-irisdb.js   # copia collections entre bancos e promove a
 node scripts/fix-historico-data.js  # converte datas do histórico para Date
 ```
 
-## Roadmap
-
-- [x] Autenticação, RBAC e segurança do backend
-- [x] Gestão de itens, categorias, estoque e histórico
-- [x] Dashboard com indicadores
-- [x] Hardening da aplicação Electron (preload, CSP, build)
-- [ ] Relatórios e exportação (CSV/PDF)
-- [ ] Suporte a múltiplos depósitos
-- [ ] Notificações de estoque mínimo
-
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT.

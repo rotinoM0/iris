@@ -5,7 +5,7 @@
   "description": "Inventário, Registro e Integração de Sistemas",
   "keywords": [],
   "author": "Matheus Fernandes",
-  "license": "Proprietary",
+  "license": "MIT",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
