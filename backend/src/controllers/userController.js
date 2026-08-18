@@ -44,9 +44,18 @@ const register = async (req, res, next) => {
     }
 }
 
+const getMe = async (req, res, next) => {
+    try {
+        res.status(200).json({success: true, data: req.user});
+    } catch (error) {
+        next(error);
+    }
+}
+
 export default {
     getAllUsers,
     getUser,
+    getMe,
     login,
     register
 

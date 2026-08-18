@@ -18,7 +18,6 @@ export default function Register() {
         try {
             const res = await axios.post(`${config.dev.apiUrl}/auth/register`, {nome: userInput, senha: passwordInput})
             if (res.data.success) {
-                localStorage.setItem("token", res.data.token)
                 Navigate("/login")
             } else {
                 setErrorMessage(res.data.message)

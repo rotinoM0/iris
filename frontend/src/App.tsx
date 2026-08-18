@@ -12,6 +12,7 @@
 
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
+import { AuthProvider } from './context/AuthContext'
 import Login from './pages/login/Login'
 import Register from './pages/login/Register'
 import Main from './pages/stock/Stock'
@@ -20,15 +21,17 @@ import Init from './pages/Init'
 
 function App() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path='/' element={<Init />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path="/main" element={<Dashboard />} />
-        <Route path='/estoque' element={<Main />} />
-      </Routes>
-    </HashRouter>
+    <AuthProvider>
+      <HashRouter>
+        <Routes>
+          <Route path='/' element={<Init />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path="/main" element={<Dashboard />} />
+          <Route path='/estoque' element={<Main />} />
+        </Routes>
+      </HashRouter>
+    </AuthProvider>
   )
 }
 

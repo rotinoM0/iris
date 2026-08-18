@@ -4,6 +4,7 @@ import isAdmin from "../middlewares/isAdmin.js"
 
 const router = express.Router();
 
+router.get("/me", userController.getMe);
 router.get("/", isAdmin, userController.getAllUsers);
 router.get("/:id", isAdmin, userController.getUser);
 

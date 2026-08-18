@@ -5,6 +5,7 @@ import axios from "axios"
 import config from "../../config"
 
 import Footer from "../../components/Footer/Footer"
+import { useAuth } from "../../context/AuthContext"
 
 import "./Login.css"
 
@@ -12,6 +13,7 @@ import logoText from "/logo-text.svg"
 
 export default function Login() {
     const Navigate = useNavigate();
+    const { login } = useAuth();
 
     const [userInput, setUserInput] = useState("")
     const [passwordInput, setPasswordInput] = useState("")
@@ -28,15 +30,13 @@ export default function Login() {
         try {
             const res = await axios.post(`${config.dev.apiUrl}/auth/login`, { nome: userInput, senha: passwordInput })
             if (res.data.success) {
-                localStorage.setItem("token", res.data.token)
-                localStorage.setItem("user", JSON.stringify(res.data.user))
-                
+                login(res.data.token, res.data.user)
+
                 setErrorMessage("")
                 Navigate("/main")
             } else {
                 setErrorMessage(res.data.message || "Erro ao fazer login")
                 localStorage.removeItem("token")
-                localStorage.removeItem("user")
             }
 
         } catch (error) {

@@ -5,12 +5,13 @@ import "./KebabMenu.css"
 import axiosInstance from "../../services/api";
 import config from "../../config";
 import addHistory from "../../services/historyService";
+import { useAuth } from "../../context/AuthContext";
 
 function KebabMenu({ options, id }: { options: { label: React.ReactNode; action: () => void }[]; id: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null)
 
-    const isAdmin = JSON.parse(localStorage.getItem("user") || '{}').cargo === "admin";
+    const { isAdmin } = useAuth();
     
     const deleteItem = async () => {
         try {

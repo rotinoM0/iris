@@ -1,18 +1,19 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 export default function Init() {
     const Navigate = useNavigate();
-
+    const { user, loading } = useAuth();
 
     useEffect(() => {
-        const token = localStorage.getItem("token")
-        if (token) {
+        if (loading) return;
+        if (user) {
             Navigate("/main")
         } else {
             Navigate("/login")
         }
-    }, [Navigate])
+    }, [loading, user, Navigate])
 
     return (
         <>

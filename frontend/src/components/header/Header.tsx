@@ -7,11 +7,13 @@ import { useNavigate } from "react-router-dom"
 import { useRef, useState } from "react"
 import { DoorOpen, Scroll, User, Home } from "lucide-react"
 import Histórico from "../../modules/modals/historico/Historico"
+import { useAuth } from "../../context/AuthContext"
 
 import logoText from "/logo-text.svg"
 
 export default function Header() {
     const navigate = useNavigate()
+    const { user, isAdmin, logout } = useAuth()
 
     const [currentMenu, setCurrentMenu] = useState("")
     const menuRef = useRef<HTMLDivElement>(null)
@@ -54,14 +56,14 @@ export default function Header() {
                     <div className="flex relative">
                         <span><User /></span> 
                         <button className="flex font-bold text-gray-800 header-btn" onClick={() => toggleMenu("usuario")}>
-                            {JSON.parse(localStorage.getItem("user") || '{}').nome}
+                            {user?.nome}
                         </button>
                         {currentMenu === "usuario" && (
                             <div className="border border-gray-200 p-2 bg-white rounded-md dropdown" ref={menuRef}>
-                                {JSON.parse(localStorage.getItem("user") || '{}').cargo === "admin" && (
+                                {isAdmin && (
                                     <button className="flex gap-2 items-center text-gray-700 font-bold hover:text-blue-600 header-btn" onClick={() => {}}>Gerenciar usuários</button>
                                 )}
-                                <button className="flex gap-2 items-center text-gray-700 font-bold hover:text-red-600 header-btn" onClick={() => navigate("/login")}><DoorOpen /> Sair</button>
+                                <button className="flex gap-2 items-center text-gray-700 font-bold hover:text-red-600 header-btn" onClick={() => { logout(); navigate("/login"); }}><DoorOpen /> Sair</button>
                             </div>
                         )}
                     </div>

@@ -6,6 +6,7 @@ import axiosInstance from "../../../services/api";
 import config from "../../../config";
 import "../Modal.css"
 import { ChevronRight, Edit, Package, Plus, Trash } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 
 export default function Categoria() {
@@ -13,7 +14,7 @@ export default function Categoria() {
     const [content, setContent] = useState([])
     const [errorMessage, setErrorMessage] = useState("")
 
-    const isAdmin = JSON.parse(localStorage.getItem("user") || '{}').cargo === "admin";
+    const { isAdmin } = useAuth();
 
     const [showModels, setShowModels] = useState("")
     const [addingCategory, setAddingCategory] = useState(false)
